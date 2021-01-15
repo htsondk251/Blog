@@ -9,11 +9,11 @@
   
   <h1 th:text="${user.fullname} + '\'s micro blog'">All Posts</h1>
   <ul th:each="post : ${posts}">
-    <li>
-      <p><strong th:text="${post.title}"></strong></p><br>
+    <div>
+      <a th:href="@{/post/{id}(id=${post.id})}"><strong th:text="${post.title}"></strong></a><br>
       <p th:text="${post.content}"></p><br>
       <p th:text="${post.lastUpdate}"></p><br><br>
-    </li>
+    </div>
   </ul>
   <a href="/new">Write new post</a>
   <a href="/logout">Logout</a>

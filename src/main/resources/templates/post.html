@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write New Post</title>
+</head>
+
+<body>
+
+    <h1 th:text="${user.fullname} + '\'s micro blog'">All Posts</h1>
+
+    <input type="hidden" placeholder="id" th:field="${post.id}" /><br>
+    <div>
+        <h2 th:text="${post.title}"></h2>
+        <a th:href="@{/post/edit/{id}(id=${post.id})}">Edit</a><br>
+        <p th:text="${post.content}"></p><br>
+        <p th:text="${post.lastUpdate}"></p><br><br>
+      </div>
+      
+    <a href="/new">Write new post</a>
+    <a href="/logout">Logout</a>
+</body>
+
+</html>
