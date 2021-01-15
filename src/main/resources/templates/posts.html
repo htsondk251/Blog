@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <h1 th:text="${user.fullname} + '\'s micro blog'">All Posts</h1>
+  <ul th:each="post : ${posts}">
+    <li>
+      <p><strong th:text="${post.title}"></strong></p><br>
+      <p th:text="${post.content}"></p><br>
+      <p th:text="${post.lastUpdate}"></p><br><br>
+    </li>
+  </ul>
+  <a href="/new">Write new post</a>
+  <a href="/logout">Logout</a>
+</body>
+</html>
