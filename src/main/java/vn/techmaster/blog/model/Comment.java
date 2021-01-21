@@ -1,5 +1,6 @@
 package vn.techmaster.blog.model;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -12,13 +13,19 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "comment")
 @Table(name = "comment")
-@Data
+// @Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
@@ -26,6 +33,7 @@ public class Comment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String content;
+  @DateTimeFormat(pattern = "dd/MM/yyyy - HH:mm")
   private LocalDateTime lastUpdate;
   @PrePersist //Trước khi lưu khi khởi tạo record
   public void prePersist() {
@@ -45,5 +53,11 @@ public class Comment {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Post post; //Mỗi comment phải gắn vào một post
+
+  @Override
+  public String toString() {
+    return "Comment [commenter=" + commenter + ", id=" + id + ", post=" + post + "]";
+  }
  
+
 }

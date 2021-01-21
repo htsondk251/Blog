@@ -7,8 +7,7 @@ import vn.techmaster.blog.controller.request.LoginRequest;
 import vn.techmaster.blog.repository.UserRepository;
 @Service
 public class AuthenService implements IAuthenService {
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Override
   public void login(LoginRequest loginRequest) throws AuthenException {

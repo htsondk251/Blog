@@ -10,10 +10,10 @@
     <h1 th:text="${user.fullname} + '\'s micro blog'">All Posts</h1>
     
     <form action="#" th:action="@{/post/save}" method="post" th:object="${post}">
-        <!-- <label for="title">Title</label><br> -->
         <input type="hidden" placeholder="id" th:field="*{id}" /><br>
+        <label for="title">Title</label><br>
         <input type="text" placeholder="title" th:field="*{title}" /><br>
-        <!-- <label for="content">Content</label><br> -->
+        <label for="content">Content</label><br>
         <input type="text" placeholder="content" th:field="*{content}"/><br>
         <button type="submit">Save</button>
     </form>

@@ -91,7 +91,7 @@ public class CommentRepositoryTest {
   }
 
   @Test
-  public void insertTest() {
+  public void insertionTest() {
     List<Comment> comments = commentRepository.findAll();
     Comment comment1Check = commentRepository.findById(1L).get();
 
@@ -110,5 +110,22 @@ public class CommentRepositoryTest {
     assertThat(aliceComments.size()).isEqualTo(2);
     assertThat(aliceComments.get(1).getContent()).isEqualTo("alice's comment - post 2");
 
+  }
+
+  @Test
+  public void deleteFromPostRepositoryTest(){
+    post1.removeComment(comment2);
+    userBob.removeComment(comment2);
+    userRepository.save(userBob);
+    userRepository.save(userAlice);
+
+    List<Comment> aliceComments = userAlice.getComments();
+    List<Comment> bobComments = userBob.getComments();
+
+    aliceComments.stream().forEach(System.out::println);
+    bobComments.stream().forEach(System.out::println);
+
+    assertThat(post1.getComments().size()).isEqualTo(1);
+    assertThat(userBob.getComments().size()).isEqualTo(0);
   }
 }

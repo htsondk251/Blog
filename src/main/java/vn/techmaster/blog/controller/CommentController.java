@@ -1,5 +1,6 @@
 package vn.techmaster.blog.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,74 +19,81 @@ import vn.techmaster.blog.model.Comment;
 import vn.techmaster.blog.model.Post;
 import vn.techmaster.blog.model.User;
 import vn.techmaster.blog.repository.CommentRepository;
+import vn.techmaster.blog.repository.PostRepository;
 import vn.techmaster.blog.repository.UserRepository;
 import vn.techmaster.blog.security.CookieManager;
-import vn.techmaster.blog.service.CommentServiceImpl;
-import vn.techmaster.blog.service.ICommentService;
 import vn.techmaster.blog.service.iPostService;
-
 
 @Controller
 public class CommentController {
-    @Autowired CommentRepository commentRepository;
-    @Autowired ICommentService commentServiceImpl;
     @Autowired CookieManager cookieManager;
+    // @Autowired iPostService postService;
+    // @Autowired ICommentService commentServiceImpl;
+    @Autowired CommentRepository commentRepository;
     @Autowired UserRepository userRepository;
-    @Autowired iPostService postService;
+    @Autowired PostRepository postRepository;
 
     @GetMapping("/comment/new/{id}")
-    public String addComment(@PathVariable("id") Long postId, HttpServletRequest request, Model model) {
-        User user = null;
-        String userEmail = cookieManager.getAuthenticatedEmail(request);
-        Optional<User> userOptional = userRepository.findByEmail(userEmail);
-        if (userOptional.isPresent()) {
-          user = userOptional.get();
-        }
+    public String addComment(@PathVariable Long id, HttpServletRequest request, Model model) {
+        // User user = null;
+        // String userEmail = cookieManager.getAuthenticatedEmail(request);
+        // Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        // if (userOptional.isPresent()) {
+        // user = userOptional.get();
+        // }
         // Post post = postService.findByUserAndId(user, postId);
-        model.addAttribute("postId", postId);
-        model.addAttribute("user", user);
+        model.addAttribute("postId", id);
+        // model.addAttribute("user", user);
         model.addAttribute("comment", new Comment());
 
         return "newComment";
     }
 
     @PostMapping("/comment/save")
-    public String handleAddComment(@ModelAttribute Comment comment, @RequestParam(value="postId") Long postId, BindingResult bindingResult, HttpServletRequest request, Model model) {
-        User user = null;
+    public String handleAddComment(@ModelAttribute Comment comment, @RequestParam(value = "postId") Long postId,
+            BindingResult bindingResult, HttpServletRequest request, Model model) {
+        Post post = postRepository.getOne(postId);
         String userEmail = cookieManager.getAuthenticatedEmail(request);
-        Optional<User> userOptional = userRepository.findByEmail(userEmail);
-        if (userOptional.isPresent()) {
-          user = userOptional.get();
-          user.addComment(comment);
-          userRepository.save(user);
-        }
-        Post post = postService.findByUserAndId(user, postId);
-        post.addComment(comment);
-        userRepository.save(post.getAuthor());
+        User commenter = userRepository.findByEmail(userEmail).get();
         
-        model.addAttribute("user", user);
+        commentRepository.save(comment);
+        commenter.addComment(comment);
+        userRepository.save(commenter);
+        post.addComment(comment);
+        userRepository.save(commenter);
+        userRepository.save(post.getAuthor());
+        // List<Comment> comments = post.getComments();
 
+        model.addAttribute("user", commenter);
+        model.addAttribute("post", post);
+        model.addAttribute("comments", post.getComments());
         return "post";
     }
 
     @GetMapping("/comment/remove/{id}")
     public String removeComment(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        Comment commentToBeDeleted = null;
-        Long postId = null;
-        Optional<Comment> commentOptional = commentRepository.findById(id);
-        if (commentOptional.isPresent()) {
-            commentToBeDeleted = commentOptional.get();
-            postId = commentToBeDeleted.getPost().getId();
-            commentRepository.delete(commentToBeDeleted);
-        } else {
-            throw new IllegalArgumentException("comment not exist");
-        }
-        
-        model.addAttribute("user", request.getAttribute("user"));
-        model.addAttribute("posts", request.getAttribute("posts"));
-        model.addAttribute("comments", commentServiceImpl.findByPostID(postId));
+        // Comment commentToBeDeleted = null;
+        Post post = null;
+        User author = null;
+        String userEmail = cookieManager.getAuthenticatedEmail(request);
+        User commenter = userRepository.findByEmail(userEmail).get();
+        Comment commentToBeDeleted = commentRepository.getOne(id);
+        // if (commentOptional.isPresent()) {
+            // commentToBeDeleted = commentOptional.get();
+            post = commentToBeDeleted.getPost();
+            author = post.getAuthor();
+            post.removeComment(commentToBeDeleted);
+            postRepository.save(post);
+            userRepository.save(commenter);
+            userRepository.save(author);
+        // } else {
+        //     throw new IllegalArgumentException("comment not exist");
+        // }
+
+        model.addAttribute("user", commenter);
+        model.addAttribute("post", post);
+        model.addAttribute("comments", post.getComments());
         return "post";
     }
-    
 
 }

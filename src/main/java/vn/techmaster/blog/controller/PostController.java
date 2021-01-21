@@ -27,15 +27,10 @@ import vn.techmaster.blog.service.iPostService;
 
 @Controller
 public class PostController {
-
-  // private final String LOGIN_COOKIE = "loginsuccess";
-  @Autowired private iPostService postService;
-
-  @Autowired private UserRepository userRepository;
-
-  // @Autowired private PostRepository postRepository;
-
   @Autowired private CookieManager cookieManager;
+  @Autowired private iPostService postService;
+  @Autowired private UserRepository userRepository;
+  @Autowired private PostRepository postRepository;
 
   @GetMapping("/posts")
   public String getAllPosts(Model model, HttpServletRequest request) {
@@ -54,10 +49,11 @@ public class PostController {
     }
     model.addAttribute("user", user.get());
     model.addAttribute("posts", posts);
+    //TODO: cut the content to 1 short sentence
     return Route.ALLPOSTS;
   }
 
-  @GetMapping("/new")
+  @GetMapping("/post/new")
   public String addNewPost(Model model, HttpServletRequest request) {
     User user = null;
     String userEmail = cookieManager.getAuthenticatedEmail(request);
@@ -69,7 +65,7 @@ public class PostController {
     model.addAttribute("user", user);
     model.addAttribute("post", new Post());
 
-    return "new";
+    return "handlePost";
   }
 
   @PostMapping("/post/save")
@@ -94,14 +90,15 @@ public class PostController {
     }
     Long id = post.getId();
     if (id == null) {
+      postRepository.save(post);
       user.addPost(post);
-      userRepository.save(user);
+      
     } else {
-      Post postToUpdate = postService.findById(user, id);
+      Post postToUpdate = postService.findByUserAndId(user, id);
       postToUpdate.setTitle(post.getTitle());
       postToUpdate.setContent(post.getContent());
-      userRepository.save(user);
     }
+    userRepository.save(user);
     return Route.REDIRECT_POSTS;
   }
 
@@ -113,7 +110,7 @@ public class PostController {
     Optional<User> userOptional = userRepository.findByEmail(userEmail);
     if (userOptional.isPresent()) {
       user = userOptional.get();
-      post = postService.findById(user, id);
+      post = postService.findByUserAndId(user, id);
     }
 
     model.addAttribute("user", user);
@@ -129,12 +126,12 @@ public class PostController {
     Optional<User> userOptional = userRepository.findByEmail(userEmail);
     if (userOptional.isPresent()) {
       user = userOptional.get();
-      post = postService.findById(user, id);
+      post = postService.findByUserAndId(user, id);
     }
 
     model.addAttribute("user", user);
     model.addAttribute("post", post);
-    return "new";
+    return "handlePost";
   }
 
 

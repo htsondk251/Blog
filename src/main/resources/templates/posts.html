@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title th:text="${user.fullname} + '\'s micro blog'">All Posts</title>
 </head>
 <body>
   
@@ -12,10 +12,10 @@
     <div>
       <a th:href="@{/post/{id}(id=${post.id})}"><strong th:text="${post.title}"></strong></a><br>
       <p th:text="${post.content}"></p><br>
-      <p th:text="${post.lastUpdate}"></p><br><br>
+      <!-- <p th:text="${post.lastUpdate}"></p><br><br> -->
     </div>
   </ul>
-  <a href="/new">Write new post</a>
+  <a href="/post/new">Write new post</a>
   <a href="/logout">Logout</a>
 </body>
 </html>
