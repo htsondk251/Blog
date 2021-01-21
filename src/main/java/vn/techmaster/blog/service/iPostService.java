@@ -7,5 +7,5 @@ import vn.techmaster.blog.model.User;
 
 public interface iPostService {
   List<Post> getAllPostOfUser(User user);
-  Post findById(User user, Long id);
+  Post findByUserAndId(User user, Long id);
 }

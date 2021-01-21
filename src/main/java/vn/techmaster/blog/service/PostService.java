@@ -19,7 +19,7 @@ public class PostService implements iPostService {
   }
 
   @Override
-  public Post findById(User user, Long id) {
+  public Post findByUserAndId(User user, Long id) {
     List<Post> posts = getAllPostOfUser(user);
     Optional<Post> post = posts.stream().filter(p -> p.getId() == id).findFirst();
     if (post != null) {
