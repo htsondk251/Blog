@@ -27,8 +27,7 @@ import vn.techmaster.blog.service.iPostService;
 @Controller
 public class CommentController {
     @Autowired CookieManager cookieManager;
-    // @Autowired iPostService postService;
-    // @Autowired ICommentService commentServiceImpl;
+
     @Autowired CommentRepository commentRepository;
     @Autowired UserRepository userRepository;
     @Autowired PostRepository postRepository;
@@ -43,7 +42,7 @@ public class CommentController {
         // }
         // Post post = postService.findByUserAndId(user, postId);
         model.addAttribute("postId", id);
-        // model.addAttribute("user", user);
+        // model.addAttribute(Attribute.User, user);
         model.addAttribute("comment", new Comment());
 
         return "newComment";
@@ -64,9 +63,11 @@ public class CommentController {
         userRepository.save(post.getAuthor());
         // List<Comment> comments = post.getComments();
 
-        model.addAttribute("user", commenter);
-        model.addAttribute("post", post);
-        model.addAttribute("comments", post.getComments());
+        model.addAttribute(Attribute.USER, commenter);
+        model.addAttribute(Attribute.COMMENTER, commenter);
+        model.addAttribute(Attribute.POST, post);
+        model.addAttribute(Attribute.AUTHOR, post.getAuthor());
+        model.addAttribute(Attribute.COMMENTS, post.getComments());
         return "post";
     }
 
@@ -90,9 +91,9 @@ public class CommentController {
         //     throw new IllegalArgumentException("comment not exist");
         // }
 
-        model.addAttribute("user", commenter);
-        model.addAttribute("post", post);
-        model.addAttribute("comments", post.getComments());
+        model.addAttribute(Attribute.USER, commenter);
+        model.addAttribute(Attribute.POST, post);
+        model.addAttribute(Attribute.COMMENTS, post.getComments());
         return "post";
     }
 

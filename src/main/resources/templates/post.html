@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Write New Post</title>
+    <title th:text="${user.fullname} + '\'s micro blog'">Write New Post</title>
 </head>
 
 <body>
 
-    <h1 th:text="${user.fullname} + '\'s micro blog'">All Posts</h1>
+    <h1 th:text="${author.fullname} + '\'s micro blog'">All Posts</h1>
 
     <!-- <input type="hidden" placeholder="id" th:field="${post.id}" /><br> -->
     <div>
         <h2 th:text="${post.title}"></h2>
         <p th:text="${post.lastUpdate}"></p><br>
-        <a th:href="@{/post/edit/{id}(id=${post.id})}">Edit</a><br>
+        <a th:if="${user.id == post.author.id}" th:href="@{/post/edit/{id}(id=${post.id})}">Edit</a><br>
+        <a th:if="${user.id == post.author.id}" th:href="@{/post/delete/{id}(id=${post.id})}">Delete</a><br>
         <p th:text="${post.content}"></p><br>
     </div>
     <div>
@@ -30,7 +31,7 @@
         <ul th:each="comment : ${comments}">
             <li>
                 <p th:text="${comment.commenter.fullname} + ' comments at ' + ${comment.lastUpdate}"></p>
-                <a th:href="@{/comment/remove/{id}(id=${comment.id})}">Remove</a>
+                <a th:if="${user.id == comment.commenter.id}" th:href="@{/comment/remove/{id}(id=${comment.id})}">Remove</a>
                 <p th:text="${comment.content}"></p>
             </li>
         </ul>
@@ -44,8 +45,10 @@
             <button type="submit">Add</button>
         </form> -->
     </div>
-    <a href="/post/new">Write new post</a>
-    <a href="/logout">Logout</a>
+    <a th:if="${user.id == author.id}" href="/post/new">Write new post</a>
+    <a th:unless="${user.id == author.id}"th:href="@{/posts}" th:text="'Back to ' + ${user.fullname} + '\'s micro blog'">Back</a>
+    <a th:if="${user.id == author.id}" href="/logout">Logout</a>
 </body>
+
 
 </html>

@@ -15,12 +15,12 @@
       <!-- <p th:text="${post.lastUpdate}"></p><br><br> -->
     </div>
   </ul>
-  <a th:if="${user.id == author.id}" href="/post/new">Write new post</a>
-  <a th:unless="${user.id == author.id}"th:href="@{/posts}" th:text="'Back to ' + ${user.fullname} + '\'s micro blog'">Back</a>
-  <a th:if="${user.id == author.id}" href="/logout">Logout</a>
-  <hr>
-  <div th:each="other : ${others}">
-    <a th:href="@{/{userId}/other/{authorId}(userId=${user.id}, authorId=${other.id})}" th:text="${other.fullname} + '\'s micro blog'">Other's posts</a>
+  <!-- <a th:if="${user.id == post.author.id}" href="/post/new">Write new post</a> -->
+  <a href="/logout">Logout</a>
+  <a th:href="@{/posts}" th:text="'Back to ' + ${author.fullname} + '\'s micro blog'">Back</a>
+  <!-- <hr> -->
+  <!-- <div th:each="other : ${others}"> -->
+    <!-- <a th:href="@{/{userId}/other/{authorId}(userId=${user.id}, authorId=${other.id})}" th:text="${other.fullname} + '\'s micro blog'">Other's posts</a> -->
     <!-- <a th:href="@{/other/{authorId}(authorId=${other.id})}" th:text="${other.fullname} + '\'s micro blog'">Other's posts</a> -->
   </div>
 </body>

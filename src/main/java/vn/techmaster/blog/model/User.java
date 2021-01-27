@@ -17,21 +17,19 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NaturalId;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "user")
-@Table(name = "user")
-// @Data
+@Entity(name = "User")
+@Table(name = "USER")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
   @Id
-  private String id;
+  private Long id;
 
   @Column(nullable = false, length = 64)
   private String fullname;

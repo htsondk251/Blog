@@ -54,6 +54,9 @@ public class PostRepositoryTest {
     userBob.addPost(post1);
     userBob.addPost(post2);
     userAlice.addPost(post3);
+
+    userRepository.flush();
+    
     System.out.println("finish setup");
   }
   @Test
@@ -72,5 +75,14 @@ public class PostRepositoryTest {
     assertThat(alicePosts.size()).isEqualTo(1);
     assertThat(alicePosts.get(0).getTitle()).isEqualTo("first post");
 
+  }
+
+  @Test
+  public void deleteionTest() {
+    userBob.removePost(post1);
+    userRepository.flush();
+
+    assertThat(userBob.getPosts().size()).isEqualTo(1);
+    assertThat(postRepository.findAll().size()).isEqualTo(2);
   }
 }

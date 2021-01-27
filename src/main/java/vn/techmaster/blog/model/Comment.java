@@ -16,14 +16,12 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "comment")
-@Table(name = "comment")
-// @Data
+@Entity(name = "Comment")
+@Table(name = "COMMENT")
 @Setter
 @Getter
 @NoArgsConstructor

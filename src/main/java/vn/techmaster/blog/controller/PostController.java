@@ -3,6 +3,7 @@ package vn.techmaster.blog.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import vn.techmaster.blog.controller.Attribute;
 import vn.techmaster.blog.controller.request.LoginRequest;
 import vn.techmaster.blog.model.Post;
 import vn.techmaster.blog.model.User;
@@ -35,6 +37,8 @@ public class PostController {
   @GetMapping("/posts")
   public String getAllPosts(Model model, HttpServletRequest request) {
     List<Post> posts = new ArrayList<>();
+    User user = null;
+    
     String userEmail = cookieManager.getAuthenticatedEmail(request);
     //TODO: handle exception
     // if (userEmail != null) {
@@ -43,12 +47,18 @@ public class PostController {
     //   return Route.REDIRECT_HOME;
     // }
     
-    Optional<User> user = userRepository.findByEmail(userEmail);
-    if (user.isPresent()) {
-      posts = postService.getAllPostOfUser(user.get());
+    Optional<User> userOptional = userRepository.findByEmail(userEmail);
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+      posts = postService.getAllPostOfUser(user);
     }
-    model.addAttribute("user", user.get());
-    model.addAttribute("posts", posts);
+    // List<String> others = userRepository.findAll().stream().filter(u -> u != userOptional.get()).map(u -> u.getEmail()).collect(Collectors.toList());
+    List<User> others = userRepository.findAll().stream().filter(u -> u != userOptional.get()).collect(Collectors.toList());
+    
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.AUTHOR, user);
+    model.addAttribute("others", others);
+    model.addAttribute(Attribute.POSTS, posts);
     //TODO: cut the content to 1 short sentence
     return Route.ALLPOSTS;
   }
@@ -62,9 +72,8 @@ public class PostController {
       user = userOptional.get();
     }
 
-    model.addAttribute("user", user);
-    model.addAttribute("post", new Post());
-
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.POST, new Post());
     return "handlePost";
   }
 
@@ -92,7 +101,6 @@ public class PostController {
     if (id == null) {
       postRepository.save(post);
       user.addPost(post);
-      
     } else {
       Post postToUpdate = postService.findByUserAndId(user, id);
       postToUpdate.setTitle(post.getTitle());
@@ -102,19 +110,25 @@ public class PostController {
     return Route.REDIRECT_POSTS;
   }
 
-  @GetMapping("/post/{id}")
-  public String getPost(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+  @GetMapping("/post/{postId}")
+  public String getPost(@PathVariable("postId") Long id, Model model, HttpServletRequest request) {
     User user = null;
     Post post = null;
+    User author = null;
     String userEmail = cookieManager.getAuthenticatedEmail(request);
     Optional<User> userOptional = userRepository.findByEmail(userEmail);
     if (userOptional.isPresent()) {
       user = userOptional.get();
-      post = postService.findByUserAndId(user, id);
+      // post = postService.findByUserAndId(user, id);
+      post = postRepository.findById(id).get();
+      author = post.getAuthor();
     }
 
-    model.addAttribute("user", user);
-    model.addAttribute("post", post);
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.POST, post);
+    model.addAttribute(Attribute.AUTHOR, author);
+    //TODO: find why not have "comments" attribute, app still run: not show, not error notify, but run?
+    model.addAttribute(Attribute.COMMENTS, post.getComments());
     return "post";
   }
 
@@ -129,10 +143,44 @@ public class PostController {
       post = postService.findByUserAndId(user, id);
     }
 
-    model.addAttribute("user", user);
-    model.addAttribute("post", post);
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.POST, post);
     return "handlePost";
   }
 
+  @GetMapping("/post/delete/{id}")
+  public String deletePost(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+    User user = null;
+    Post post = null;
+    String userEmail = cookieManager.getAuthenticatedEmail(request);
+    Optional<User> userOptional = userRepository.findByEmail(userEmail);
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+      post = postRepository.getOne(id);
+      user.removePost(post);
+      userRepository.flush();
+    }
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.POSTS, user.getPosts());
+    return Route.REDIRECT_POSTS;
+  }
+
+  @GetMapping("/{userId}/other/{authorId}")
+  public String viewOtherPosts(@PathVariable("userId") Long userId, @PathVariable("authorId") Long authorId, Model model, HttpServletRequest request) {
+    User user = null;
+    User author = null;
+    
+    String userEmail = cookieManager.getAuthenticatedEmail(request);
+    Optional<User> userOptional = userRepository.findByEmail(userEmail);
+    if (userOptional.isPresent()) {
+      user = userOptional.get();
+      author = userRepository.findById(authorId).get();
+    }
+
+    model.addAttribute(Attribute.USER, user);
+    model.addAttribute(Attribute.AUTHOR, author);
+    model.addAttribute(Attribute.POSTS, author.getPosts());
+    return Route.ALLPOSTS;
+  }
 
 }

@@ -18,14 +18,12 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "post")
-@Table(name = "post")
-// @Data
+@Entity(name = "Post")
+@Table(name = "POST")
 @Setter
 @Getter
 @NoArgsConstructor
