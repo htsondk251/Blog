@@ -1,3 +1,7 @@
+# User's Guide
+1. access at [http://localhost:8080](http://localhost:8080)  
+2. login using 1 out of 6 available accounts in [user.sql](src/main/resources/user.sql)  
+   and you can add new posts, new comments, also can view others' posts and comment on their posts
 # Lập trình tại lớp 180 phút: ứng dụng Micro Blog
 
 ## Yêu cầu

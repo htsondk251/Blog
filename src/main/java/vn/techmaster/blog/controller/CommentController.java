@@ -61,7 +61,7 @@ public class CommentController {
         post.addComment(comment);
         userRepository.save(commenter);
         userRepository.save(post.getAuthor());
-        // List<Comment> comments = post.getComments();
+        
 
         model.addAttribute(Attribute.USER, commenter);
         model.addAttribute(Attribute.COMMENTER, commenter);

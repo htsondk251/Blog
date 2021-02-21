@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,8 +49,8 @@ public class PostController {
       user = userOptional.get();
       posts = postService.getAllPostOfUser(user);
     }
-    // List<String> others = userRepository.findAll().stream().filter(u -> u != userOptional.get()).map(u -> u.getEmail()).collect(Collectors.toList());
-    List<User> others = userRepository.findAll().stream().filter(u -> u != userOptional.get()).collect(Collectors.toList());
+    List<User> others = userRepository.findAll().stream()
+                          .filter(u -> u != userOptional.get()).collect(Collectors.toList());
     
     model.addAttribute(Attribute.USER, user);
     model.addAttribute(Attribute.AUTHOR, user);
@@ -119,7 +116,6 @@ public class PostController {
     Optional<User> userOptional = userRepository.findByEmail(userEmail);
     if (userOptional.isPresent()) {
       user = userOptional.get();
-      // post = postService.findByUserAndId(user, id);
       post = postRepository.findById(id).get();
       author = post.getAuthor();
     }

@@ -11,17 +11,14 @@
   <ul th:each="post : ${posts}">
     <div>
       <a th:href="@{/post/{id}(id=${post.id})}"><strong th:text="${post.title}"></strong></a><br>
-      <!-- <p th:text="${post.content}"></p><br> -->
-      <!-- <p th:text="${post.lastUpdate}"></p><br><br> -->
     </div>
   </ul>
-  <a th:if="${user.id == author.id}" href="/post/new">Write new post</a>
+  <a th:if="${user.id == author.id}" href="/post/new">Write new post</a>&nbsp;&nbsp;
   <a th:unless="${user.id == author.id}"th:href="@{/posts}" th:text="'Back to ' + ${user.fullname} + '\'s micro blog'">Back</a>
   <a th:if="${user.id == author.id}" href="/logout">Logout</a>
   <hr>
   <div th:each="other : ${others}">
     <a th:href="@{/{userId}/other/{authorId}(userId=${user.id}, authorId=${other.id})}" th:text="${other.fullname} + '\'s micro blog'">Other's posts</a>
-    <!-- <a th:href="@{/other/{authorId}(authorId=${other.id})}" th:text="${other.fullname} + '\'s micro blog'">Other's posts</a> -->
   </div>
 </body>
 </html>
