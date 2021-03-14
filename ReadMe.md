@@ -1,22 +1,21 @@
 # User's Guide
-1. access at [http://localhost:8080](http://localhost:8080)  
-2. login using 1 out of 6 available accounts in [user.sql](src/main/resources/user.sql)  
-   and you can add new posts, new comments, also can view others' posts and comment on their posts
-# Lập trình tại lớp 180 phút: ứng dụng Micro Blog
+1. run the app
+2. access at [http://localhost:8080](http://localhost:8080)  
+3. login using 1 out of 6 available accounts in [user.sql](src/main/resources/user.sql)  
+   
+
+
+# Ứng dụng Micro Blog
 
 ## Yêu cầu
 
 **Bắt buộc**
-1. Lập trình ngay tại lớp trong 180 phút, không mang về nhà
-2. Sử dụng đúng cấu trúc dự án mẫu
-3. Đúng và đủ chức năng Login, CRUD Post, Create - Delete Comment
-4. Demo cho giảng viên cuối giờ để được chấm điểm
 
-**Không bắt buộc**
-1. Nếu thời gian có hạn, bỏ qua việc viết Unit Test
-2. Không cần viết Service component nếu thấy không cần thiết
-3. Không cần chức năng Create new account, Change Password...
-4. Không cần trang trí CSS. Giảng viên mù tịt boot strap. Ok !
+Đúng và đủ chức năng:
+- Login
+- CRUD Post
+- Create - Delete Comment (một user có thể comment post của người khác và chỉ có thể xóa comment của mình viết)
+
 
 ## Mockup giao diện
 ![](images/login.jpg)
